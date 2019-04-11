@@ -18,7 +18,8 @@ namespace ScreenRotationExclusion
         {
             Auto,
             Fixed,
-            Reverse
+            Reverse,
+            ReverseFixed
         }
 
         // A dict of top-level UIElements and the FrameworkElement that are being listened for
@@ -108,30 +109,33 @@ namespace ScreenRotationExclusion
                             rotationAngle = 0;
                             break;
                         case DisplayOrientations.Portrait:
-                            rotationAngle = 270;
+                            rotationAngle = 90;
                             break;
                         case DisplayOrientations.LandscapeFlipped:
                             rotationAngle = 180;
                             break;
                         case DisplayOrientations.PortraitFlipped:
-                            rotationAngle = 90;
+                            rotationAngle = 270;
                             break;
                     }
                     break;
                 case ElementOrientation.Reverse:
+                    rotationAngle = 180;
+                    break;
+                case ElementOrientation.ReverseFixed:
                     switch (displayOrientation)
                     {
                         case DisplayOrientations.Landscape:
                             rotationAngle = 180;
                             break;
                         case DisplayOrientations.Portrait:
-                            rotationAngle = 90;
+                            rotationAngle = 270;
                             break;
                         case DisplayOrientations.LandscapeFlipped:
                             rotationAngle = 0;
                             break;
                         case DisplayOrientations.PortraitFlipped:
-                            rotationAngle = 270;
+                            rotationAngle = 90;
                             break;
                     }
                     break;
@@ -188,13 +192,13 @@ namespace ScreenRotationExclusion
                     RotationAngle = 0;
                     break;
                 case DisplayOrientations.Portrait:
-                    RotationAngle = 270;
+                    RotationAngle = 90;
                     break;
                 case DisplayOrientations.LandscapeFlipped:
                     RotationAngle = 180;
                     break;
                 case DisplayOrientations.PortraitFlipped:
-                    RotationAngle = 90;
+                    RotationAngle = 270;
                     break;
             }
         }

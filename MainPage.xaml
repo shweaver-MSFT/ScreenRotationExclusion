@@ -18,6 +18,18 @@
     
     <Grid Background="DarkGray">
 
+        <StackPanel>
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="White" />
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock Text="Auto: Default value. Element appears as normal." />
+            <TextBlock Text="Fixed: Element always faces device North" />
+            <TextBlock Text="Reverse: Element is always upsidedown." />
+            <TextBlock Text="Reverse Fixed: Element always faces device South." />
+        </StackPanel>
+        
         <TextBlock
             Text="{Binding CurrentScreenOrientation, Converter={StaticResource EnumToStringConverter}}"
             Foreground="White"
@@ -54,30 +66,34 @@
                 </Style>
             </Grid.Resources>
 
-            <Border RenderTransformOrigin="0.5, 0.5">
+            <!--<Border RenderTransformOrigin="0.5, 0.5">
                 <Border.RenderTransform>
                     <RotateTransform Angle="{Binding RotationAngle}" />
                 </Border.RenderTransform>
                 <TextBlock Text="Manual Fixed" />
+            </Border>-->
+
+            <Border local:ElementOrientationExtensions.ElementOrientation="Auto">
+                <TextBlock Text="Auto/Normal" />
             </Border>
 
             <Border
                 Grid.Column="1"
-                local:ElementOrientationExtensions.ElementOrientation="Auto">
-                <TextBlock Text="Auto" />
-            </Border>
-        
-            <Border
-                Grid.Row="1"
                 local:ElementOrientationExtensions.ElementOrientation="Fixed">
                 <TextBlock Text="Fixed" />
             </Border>
 
+            <Border 
+                Grid.Row="1" 
+                local:ElementOrientationExtensions.ElementOrientation="Reverse">
+                <TextBlock Text="Reverse" />
+            </Border>
+
             <Border
                 Grid.Row="1"
                 Grid.Column="1"
-                local:ElementOrientationExtensions.ElementOrientation="Reverse">
-                <TextBlock Text="Reverse" />
+                local:ElementOrientationExtensions.ElementOrientation="ReverseFixed">
+                <TextBlock Text="Reverse Fixed" />
             </Border>
         </Grid>
     </Grid>
