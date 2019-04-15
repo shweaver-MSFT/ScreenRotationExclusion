@@ -12,10 +12,6 @@
         <local:MainPageViewModel />
     </Page.DataContext>
     
-    <Page.Resources>
-        <local:EnumToStringConverter x:Key="EnumToStringConverter" />
-    </Page.Resources>
-    
     <Grid Background="DarkGray">
 
         <StackPanel>
@@ -29,14 +25,31 @@
             <TextBlock Text="Reverse: Element is always upsidedown." />
             <TextBlock Text="Reverse Fixed: Element always faces device South." />
         </StackPanel>
-        
-        <TextBlock
-            Text="{Binding CurrentScreenOrientation, Converter={StaticResource EnumToStringConverter}}"
-            Foreground="White"
-            FontSize="100"
+
+        <StackPanel
             HorizontalAlignment="Left"
-            VerticalAlignment="Bottom" />
-        
+            VerticalAlignment="Bottom">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="FontSize" Value="50" />
+                </Style>
+            </StackPanel.Resources>
+
+            <TextBlock FontFamily="Segoe UI">
+                <Run Text="Native orientation:" FontWeight="Bold" />
+                <Run Text="{Binding NativeDisplayOrientation, Converter={StaticResource EnumToStringConverter}}" />
+            </TextBlock>
+            <TextBlock FontFamily="Segoe UI">
+                <Run Text="Preferred orientation:" FontWeight="Bold" />
+                <Run Text="{Binding PreferredDisplayOrientation, Converter={StaticResource EnumToStringConverter}}" />
+            </TextBlock>
+            <TextBlock FontFamily="Segoe UI">
+                <Run Text="Current orientation:" FontWeight="Bold" />
+                <Run Text="{Binding CurrentDisplayOrientation, Converter={StaticResource EnumToStringConverter}}" />
+            </TextBlock>
+        </StackPanel>
+
         <Grid MaxWidth="600" MaxHeight="600" Margin="0,0,0,100">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -73,26 +86,26 @@
                 <TextBlock Text="Manual Fixed" />
             </Border>-->
 
-            <Border local:ElementOrientationExtensions.ElementOrientation="Auto">
+            <Border local:ElementOrientation.ElementOrientation="Auto">
                 <TextBlock Text="Auto/Normal" />
             </Border>
 
             <Border
                 Grid.Column="1"
-                local:ElementOrientationExtensions.ElementOrientation="Fixed">
+                local:ElementOrientation.ElementOrientation="Fixed">
                 <TextBlock Text="Fixed" />
             </Border>
 
             <Border 
                 Grid.Row="1" 
-                local:ElementOrientationExtensions.ElementOrientation="Reverse">
+                local:ElementOrientation.ElementOrientation="Reverse">
                 <TextBlock Text="Reverse" />
             </Border>
 
             <Border
                 Grid.Row="1"
                 Grid.Column="1"
-                local:ElementOrientationExtensions.ElementOrientation="ReverseFixed">
+                local:ElementOrientation.ElementOrientation="ReverseFixed">
                 <TextBlock Text="Reverse Fixed" />
             </Border>
         </Grid>
