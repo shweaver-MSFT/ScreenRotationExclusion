@@ -11,10 +11,12 @@
     <Page.DataContext>
         <local:MainPageViewModel />
     </Page.DataContext>
-    
+
     <Grid Background="DarkGray">
 
-        <StackPanel>
+        <StackPanel
+            Spacing="8"
+            Margin="24">
             <StackPanel.Resources>
                 <Style TargetType="TextBlock">
                     <Setter Property="Foreground" Value="White" />
@@ -27,27 +29,52 @@
         </StackPanel>
 
         <StackPanel
+            Spacing="8"
+            Margin="24"
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom">
             <StackPanel.Resources>
                 <Style TargetType="TextBlock">
                     <Setter Property="Foreground" Value="White" />
-                    <Setter Property="FontSize" Value="50" />
+                    <Setter Property="FontSize" Value="20" />
+                    <Setter Property="FontFamily" Value="Segoe UI" />
+                </Style>
+                <Style TargetType="RadioButton">
+                    <Setter Property="MinWidth" Value="0" />
                 </Style>
             </StackPanel.Resources>
 
-            <TextBlock FontFamily="Segoe UI">
-                <Run Text="Native orientation:" FontWeight="Bold" />
-                <Run Text="{Binding NativeDisplayOrientation, Converter={StaticResource EnumToStringConverter}}" />
-            </TextBlock>
-            <TextBlock FontFamily="Segoe UI">
-                <Run Text="Preferred orientation:" FontWeight="Bold" />
-                <Run Text="{Binding PreferredDisplayOrientation, Converter={StaticResource EnumToStringConverter}}" />
-            </TextBlock>
-            <TextBlock FontFamily="Segoe UI">
-                <Run Text="Current orientation:" FontWeight="Bold" />
-                <Run Text="{Binding CurrentDisplayOrientation, Converter={StaticResource EnumToStringConverter}}" />
-            </TextBlock>
+            <TextBlock Text="Orientation origin:" />
+
+            <StackPanel Orientation="Horizontal">
+                <RadioButton 
+                    GroupName="OrientationOrigin"
+                    IsChecked="{Binding CurrentOrientationOrigin, Converter={StaticResource RadioConverter}, ConverterParameter={StaticResource OrientationOrigins_Auto}, Mode=TwoWay}" />
+                <TextBlock>
+                    <Run Text="Auto:" FontWeight="Bold" />
+                    <Run Text="{Binding CurrentDisplayOrientation, Converter={StaticResource EnumToStringConverter}}" />
+                </TextBlock>
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal">
+                <RadioButton 
+                    GroupName="OrientationOrigin"
+                    IsChecked="{Binding CurrentOrientationOrigin, Converter={StaticResource RadioConverter}, ConverterParameter={StaticResource OrientationOrigins_Native}, Mode=TwoWay}" />
+                <TextBlock>
+                    <Run Text="Native:" FontWeight="Bold" />
+                    <Run Text="{Binding NativeDisplayOrientation, Converter={StaticResource EnumToStringConverter}}" />
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <RadioButton 
+                    GroupName="OrientationOrigin"
+                    IsChecked="{Binding CurrentOrientationOrigin, Converter={StaticResource RadioConverter}, ConverterParameter={StaticResource OrientationOrigins_AutoRotationPreference}, Mode=TwoWay}" />
+                <TextBlock >
+                    <Run Text="Preferred:" FontWeight="Bold" />
+                    <Run Text="{Binding PreferredDisplayOrientation, Converter={StaticResource EnumToStringConverter}}" />
+                </TextBlock>
+            </StackPanel>
         </StackPanel>
 
         <Grid MaxWidth="600" MaxHeight="600" Margin="0,0,0,100">
@@ -92,7 +119,8 @@
 
             <Border
                 Grid.Column="1"
-                local:ElementOrientation.ElementOrientation="Fixed">
+                local:ElementOrientation.ElementOrientation="Fixed"
+                local:ElementOrientation.OrientationOrigin="{Binding CurrentOrientationOrigin}">
                 <TextBlock Text="Fixed" />
             </Border>
 

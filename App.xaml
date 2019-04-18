@@ -5,7 +5,14 @@
     xmlns:local="using:ScreenRotationExclusion">
 
     <Application.Resources>
+        <!-- Converters -->
         <local:EnumToStringConverter x:Key="EnumToStringConverter" />
+        <local:RadioConverter x:Key="RadioConverter" />
+
+        <!-- Enums -->
+        <local:OrientationOrigins x:Key="OrientationOrigins_Auto">Auto</local:OrientationOrigins>
+        <local:OrientationOrigins x:Key="OrientationOrigins_Native">Native</local:OrientationOrigins>
+        <local:OrientationOrigins x:Key="OrientationOrigins_AutoRotationPreference">AutoRotationPreference</local:OrientationOrigins>
     </Application.Resources>
 
 </Application>

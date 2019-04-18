@@ -25,12 +25,12 @@ namespace ScreenRotationExclusion
             set => Set(ref _currentDisplayOrientation, value);
         }
 
-        //private int _rotationAngle;
-        //public int RotationAngle
-        //{
-        //    get => _rotationAngle;
-        //    set => Set(ref _rotationAngle, value);
-        //}
+        private OrientationOrigins _currentOrientationOrigin;
+        public OrientationOrigins CurrentOrientationOrigin
+        {
+            get => _currentOrientationOrigin;
+            set => Set(ref _currentOrientationOrigin, value);
+        }
 
         private DisplayInformation _currentDisplayInfo;
 
@@ -38,8 +38,22 @@ namespace ScreenRotationExclusion
         {
             DisplayInformation.DisplayContentsInvalidated += DisplayInformation_DisplayContentsInvalidated;
 
+            PropertyChanged += OnPropertyChanged;
+
+            CurrentOrientationOrigin = OrientationOrigins.Auto;
+
             RegisterForCurrentDisplay();
             RefreshForCurrentDisplay();
+        }
+
+        private void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(CurrentOrientationOrigin):
+                    RefreshForCurrentDisplay();
+                    break;
+            }
         }
 
         private void DisplayInformation_DisplayContentsInvalidated(DisplayInformation sender, object args)
@@ -73,22 +87,6 @@ namespace ScreenRotationExclusion
 
             NativeDisplayOrientation = _currentDisplayInfo.NativeOrientation;
             CurrentDisplayOrientation = _currentDisplayInfo.CurrentOrientation;
-
-            //switch (CurrentDisplayOrientation)
-            //{
-            //    case DisplayOrientations.Landscape:
-            //        RotationAngle = 0;
-            //        break;
-            //    case DisplayOrientations.Portrait:
-            //        RotationAngle = 90;
-            //        break;
-            //    case DisplayOrientations.LandscapeFlipped:
-            //        RotationAngle = 180;
-            //        break;
-            //    case DisplayOrientations.PortraitFlipped:
-            //        RotationAngle = 270;
-            //        break;
-            //}
         }
     }
 }

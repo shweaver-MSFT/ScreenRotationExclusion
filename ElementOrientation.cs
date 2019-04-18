@@ -7,7 +7,6 @@ using Windows.UI.Xaml.Media;
 
 namespace ScreenRotationExclusion
 {
-
     [Bindable]
     public class ElementOrientation : DependencyObject
     {
@@ -15,6 +14,7 @@ namespace ScreenRotationExclusion
         private static Dictionary<FrameworkElement, TypedEventHandler<DisplayInformation, object>> _listeningElements =
             new Dictionary<FrameworkElement, TypedEventHandler<DisplayInformation, object>>();
 
+        #region ElementOrientation DependencyProperty
         private const string ElementOrientationPropertyName = "ElementOrientation";
         private const ElementOrientations ElementOrientationDefaultValue = ElementOrientations.Auto;
 
@@ -24,16 +24,6 @@ namespace ScreenRotationExclusion
             ownerType: typeof(DependencyObject),
             defaultMetadata: new PropertyMetadata(ElementOrientationDefaultValue, new PropertyChangedCallback(OnElementOrientationChanged))
             );
-
-        static ElementOrientation()
-        {
-            DisplayInformation.DisplayContentsInvalidated += DisplayInformation_DisplayContentsInvalidated;
-        }
-
-        private static void DisplayInformation_DisplayContentsInvalidated(DisplayInformation sender, object args)
-        {
-            // Potentially needed to listen for when the view is moved to another display
-        }
 
         public static void SetElementOrientation(DependencyObject element, ElementOrientations value)
         {
@@ -61,6 +51,45 @@ namespace ScreenRotationExclusion
             }
 
             handleValueChange(sender as FrameworkElement, args.NewValue as ElementOrientations?);
+        }
+        #endregion
+
+        #region OrientationOrigin DependencyProperty
+        private const string OrientationOriginPropertyName = "OrientationOrigin";
+
+        private const OrientationOrigins OrientationOriginDefaultValue = OrientationOrigins.Auto;
+
+        public static readonly DependencyProperty OrientationOriginProperty = DependencyProperty.RegisterAttached(
+            name: OrientationOriginPropertyName,
+            propertyType: typeof(OrientationOrigins),
+            ownerType: typeof(DependencyObject),
+            defaultMetadata: new PropertyMetadata(OrientationOriginDefaultValue, new PropertyChangedCallback(OnOrientationOriginChanged))
+            );
+
+        public static void SetOrientationOrigin(DependencyObject element, OrientationOrigins value)
+        {
+            (element as FrameworkElement).SetValue(OrientationOriginProperty, value);
+        }
+
+        public static OrientationOrigins GetOrientationOrigin(DependencyObject element)
+        {
+            return (OrientationOrigins)(element as FrameworkElement).GetValue(OrientationOriginProperty);
+        }
+
+        private static void OnOrientationOriginChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+        {
+            // TODO:
+        }
+        #endregion
+
+        static ElementOrientation()
+        {
+            DisplayInformation.DisplayContentsInvalidated += DisplayInformation_DisplayContentsInvalidated;
+        }
+
+        private static void DisplayInformation_DisplayContentsInvalidated(DisplayInformation sender, object args)
+        {
+
         }
 
         private static void RegisterRotationListener(FrameworkElement element)
@@ -94,7 +123,22 @@ namespace ScreenRotationExclusion
         private static void OnOrientationChanged(FrameworkElement element, DisplayOrientations displayOrientation)
         {
             var elementOrientation = GetElementOrientation(element);
+
+            int rotationAngle = elementOrientation.GetRotationAngle();
+
+            element.RenderTransformOrigin = new Point(0.5, 0.5);
+            element.RenderTransform = new RotateTransform() { Angle = rotationAngle };
+        }
+    }
+
+    public static class ElementOrientationExtensions
+    {
+        public static int GetRotationAngle(this ElementOrientations elementOrientation, bool adjustForNative = true)
+        {
             int rotationAngle = 0;
+
+            var displayInfo = DisplayInformation.GetForCurrentView();
+            var targetOrientation = (adjustForNative) ? displayInfo.NativeOrientation : displayInfo.CurrentOrientation;
 
             switch (elementOrientation)
             {
@@ -102,54 +146,40 @@ namespace ScreenRotationExclusion
                     rotationAngle = 0;
                     break;
                 case ElementOrientations.Fixed:
-                    switch (displayOrientation)
-                    {
-                        case DisplayOrientations.Landscape:
-                            rotationAngle = 0;
-                            break;
-                        case DisplayOrientations.Portrait:
-                            rotationAngle = 90;
-                            break;
-                        case DisplayOrientations.LandscapeFlipped:
-                            rotationAngle = 180;
-                            break;
-                        case DisplayOrientations.PortraitFlipped:
-                            rotationAngle = 270;
-                            break;
-                    }
+                    rotationAngle = targetOrientation.GetRotationAngle();
                     break;
                 case ElementOrientations.Reverse:
                     rotationAngle = 180;
                     break;
                 case ElementOrientations.ReverseFixed:
-                    switch (displayOrientation)
-                    {
-                        case DisplayOrientations.Landscape:
-                            rotationAngle = 180;
-                            break;
-                        case DisplayOrientations.Portrait:
-                            rotationAngle = 270;
-                            break;
-                        case DisplayOrientations.LandscapeFlipped:
-                            rotationAngle = 0;
-                            break;
-                        case DisplayOrientations.PortraitFlipped:
-                            rotationAngle = 90;
-                            break;
-                    }
+                    rotationAngle = 360 - targetOrientation.GetRotationAngle();
                     break;
             }
 
-            bool adjustForNative = true;
-            if (adjustForNative)
-            {
-                var preferredOrientation = DisplayInformation.AutoRotationPreferences;
-                var nativeOrientation = DisplayInformation.GetForCurrentView().NativeOrientation;
+            return rotationAngle;
+        }
 
+        public static int GetRotationAngle(this DisplayOrientations displayOrientation)
+        {
+            int rotationAngle = 0;
+
+            switch (displayOrientation)
+            {
+                case DisplayOrientations.Landscape:
+                    rotationAngle = 0;
+                    break;
+                case DisplayOrientations.Portrait:
+                    rotationAngle = 90;
+                    break;
+                case DisplayOrientations.LandscapeFlipped:
+                    rotationAngle = 180;
+                    break;
+                case DisplayOrientations.PortraitFlipped:
+                    rotationAngle = 270;
+                    break;
             }
 
-            element.RenderTransformOrigin = new Point(0.5, 0.5);
-            element.RenderTransform = new RotateTransform() { Angle = rotationAngle };
+            return rotationAngle;
         }
     }
 }
