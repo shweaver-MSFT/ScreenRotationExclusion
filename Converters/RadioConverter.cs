@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml.Data;
 
-namespace ScreenRotationExclusion
+namespace ScreenRotationExclusion.Converters
 {
     /// <summary>
     /// http://blog.jerrynixon.com/2014/12/lets-code-data-binding-to-radio-button.html

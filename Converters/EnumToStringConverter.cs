@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml.Data;
 
-namespace ScreenRotationExclusion
+namespace ScreenRotationExclusion.Converters
 {
     public class EnumToStringConverter : IValueConverter
     {

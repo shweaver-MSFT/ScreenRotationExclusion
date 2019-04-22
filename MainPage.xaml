@@ -113,7 +113,9 @@
                 <TextBlock Text="Manual Fixed" />
             </Border>-->
 
-            <Border local:ElementOrientation.ElementOrientation="Auto">
+            <Border 
+                local:ElementOrientation.ElementOrientation="Auto"
+                local:ElementOrientation.OrientationOrigin="{Binding CurrentOrientationOrigin}">
                 <TextBlock Text="Auto/Normal" />
             </Border>
 
@@ -126,14 +128,16 @@
 
             <Border 
                 Grid.Row="1" 
-                local:ElementOrientation.ElementOrientation="Reverse">
+                local:ElementOrientation.ElementOrientation="Reverse"
+                local:ElementOrientation.OrientationOrigin="{Binding CurrentOrientationOrigin}">
                 <TextBlock Text="Reverse" />
             </Border>
 
             <Border
                 Grid.Row="1"
                 Grid.Column="1"
-                local:ElementOrientation.ElementOrientation="ReverseFixed">
+                local:ElementOrientation.ElementOrientation="ReverseFixed"
+                local:ElementOrientation.OrientationOrigin="{Binding CurrentOrientationOrigin}">
                 <TextBlock Text="Reverse Fixed" />
             </Border>
         </Grid>

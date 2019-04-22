@@ -78,19 +78,9 @@ namespace ScreenRotationExclusion
 
         private static void OnOrientationOriginChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            // TODO:
+            OnOrientationChanged(sender as FrameworkElement, DisplayInformation.GetForCurrentView().CurrentOrientation);
         }
         #endregion
-
-        static ElementOrientation()
-        {
-            DisplayInformation.DisplayContentsInvalidated += DisplayInformation_DisplayContentsInvalidated;
-        }
-
-        private static void DisplayInformation_DisplayContentsInvalidated(DisplayInformation sender, object args)
-        {
-
-        }
 
         private static void RegisterRotationListener(FrameworkElement element)
         {
@@ -101,6 +91,7 @@ namespace ScreenRotationExclusion
                 var displayInfo = DisplayInformation.GetForCurrentView();
                 displayInfo.OrientationChanged += handler;
 
+                element.Unloaded += Element_Unloaded;
                 _listeningElements.Add(element, handler);
 
                 OnOrientationChanged(element, displayInfo.CurrentOrientation);
@@ -114,6 +105,7 @@ namespace ScreenRotationExclusion
                 var displayInfo = DisplayInformation.GetForCurrentView();
                 displayInfo.OrientationChanged -= handler;
 
+                element.Unloaded -= Element_Unloaded;
                 _listeningElements.Remove(element);
 
                 OnOrientationChanged(element, displayInfo.CurrentOrientation);
@@ -123,63 +115,17 @@ namespace ScreenRotationExclusion
         private static void OnOrientationChanged(FrameworkElement element, DisplayOrientations displayOrientation)
         {
             var elementOrientation = GetElementOrientation(element);
+            var orientationOrigin = GetOrientationOrigin(element);
 
-            int rotationAngle = elementOrientation.GetRotationAngle();
+            int rotationAngle = elementOrientation.GetRotationAngle(orientationOrigin);
 
             element.RenderTransformOrigin = new Point(0.5, 0.5);
             element.RenderTransform = new RotateTransform() { Angle = rotationAngle };
         }
-    }
 
-    public static class ElementOrientationExtensions
-    {
-        public static int GetRotationAngle(this ElementOrientations elementOrientation, bool adjustForNative = true)
+        private static void Element_Unloaded(object sender, RoutedEventArgs e)
         {
-            int rotationAngle = 0;
-
-            var displayInfo = DisplayInformation.GetForCurrentView();
-            var targetOrientation = (adjustForNative) ? displayInfo.NativeOrientation : displayInfo.CurrentOrientation;
-
-            switch (elementOrientation)
-            {
-                case ElementOrientations.Auto:
-                    rotationAngle = 0;
-                    break;
-                case ElementOrientations.Fixed:
-                    rotationAngle = targetOrientation.GetRotationAngle();
-                    break;
-                case ElementOrientations.Reverse:
-                    rotationAngle = 180;
-                    break;
-                case ElementOrientations.ReverseFixed:
-                    rotationAngle = 360 - targetOrientation.GetRotationAngle();
-                    break;
-            }
-
-            return rotationAngle;
-        }
-
-        public static int GetRotationAngle(this DisplayOrientations displayOrientation)
-        {
-            int rotationAngle = 0;
-
-            switch (displayOrientation)
-            {
-                case DisplayOrientations.Landscape:
-                    rotationAngle = 0;
-                    break;
-                case DisplayOrientations.Portrait:
-                    rotationAngle = 90;
-                    break;
-                case DisplayOrientations.LandscapeFlipped:
-                    rotationAngle = 180;
-                    break;
-                case DisplayOrientations.PortraitFlipped:
-                    rotationAngle = 270;
-                    break;
-            }
-
-            return rotationAngle;
+            DeregisterRotationListener(sender as FrameworkElement);
         }
     }
 }

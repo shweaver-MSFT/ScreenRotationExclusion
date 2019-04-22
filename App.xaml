@@ -2,12 +2,13 @@
     x:Class="ScreenRotationExclusion.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:ScreenRotationExclusion">
+    xmlns:local="using:ScreenRotationExclusion"
+    xmlns:converters="using:ScreenRotationExclusion.Converters">
 
     <Application.Resources>
         <!-- Converters -->
-        <local:EnumToStringConverter x:Key="EnumToStringConverter" />
-        <local:RadioConverter x:Key="RadioConverter" />
+        <converters:EnumToStringConverter x:Key="EnumToStringConverter" />
+        <converters:RadioConverter x:Key="RadioConverter" />
 
         <!-- Enums -->
         <local:OrientationOrigins x:Key="OrientationOrigins_Auto">Auto</local:OrientationOrigins>
