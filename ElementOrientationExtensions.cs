@@ -37,7 +37,10 @@ namespace ScreenRotationExclusion
                     break;
                 case ElementOrientations.ReverseFixed:
                     var temp = targetOrientation.GetRotationAngle();
-                    rotationAngle = (temp == 0) ? 180 : 360 - temp;
+                    rotationAngle = (temp == 0) ? 180 : (temp == 180) ? 0 : 360 - temp;
+                    
+                    // TODO: Fix for portrait/portraitFlipped
+
                     break;
             }
 
