@@ -8,13 +8,14 @@ namespace ScreenRotationExclusion
         {
             int rotationAngle = 0;
             var displayInfo = DisplayInformation.GetForCurrentView();
+            var currentOrientation = displayInfo.CurrentOrientation;
 
             DisplayOrientations targetOrientation;
             switch (orientationOrigin)
             {
                 default:
                 case OrientationOrigins.Auto:
-                    targetOrientation = displayInfo.CurrentOrientation;
+                    targetOrientation = currentOrientation;
                     break;
                 case OrientationOrigins.Native:
                     targetOrientation = displayInfo.NativeOrientation;
@@ -27,20 +28,29 @@ namespace ScreenRotationExclusion
             switch (elementOrientation)
             {
                 case ElementOrientations.Auto:
+                case ElementOrientations.Reverse:
                     rotationAngle = 0;
                     break;
-                case ElementOrientations.Fixed:
-                    rotationAngle = targetOrientation.GetRotationAngle();
-                    break;
-                case ElementOrientations.Reverse:
-                    rotationAngle = 180;
-                    break;
-                case ElementOrientations.ReverseFixed:
-                    var temp = targetOrientation.GetRotationAngle();
-                    rotationAngle = (temp == 0) ? 180 : (temp == 180) ? 0 : 360 - temp;
-                    
-                    // TODO: Fix for portrait/portraitFlipped
 
+                case ElementOrientations.Fixed:
+                case ElementOrientations.ReverseFixed:
+                    if (orientationOrigin == OrientationOrigins.Auto && targetOrientation == currentOrientation)
+                    {
+                        rotationAngle = 0;
+                    }
+                    else
+                    {
+                        rotationAngle = targetOrientation.GetRotationAngle();
+                        rotationAngle += currentOrientation.GetRotationAngle();
+                    }
+                    break;
+            }
+
+            switch (elementOrientation)
+            {
+                case ElementOrientations.Reverse:
+                case ElementOrientations.ReverseFixed:
+                    rotationAngle -= 180;
                     break;
             }
 
